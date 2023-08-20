@@ -5,8 +5,13 @@ import (
 )
 
 func main() {
+	// Parse commandline flags
 	Init()
-
 	awsAuthConfig := GetAwsAuthConfig(Region)
-	fmt.Printf("%v", GetCallerIdentity(awsAuthConfig))
+
+	if GetCurrentProfileDetails {
+		callerIdentityOutput := GetCallerIdentity(awsAuthConfig)
+		fmt.Print(callerIdentityOutput)
+		return
+	}
 }
