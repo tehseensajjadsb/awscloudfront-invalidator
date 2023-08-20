@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"strconv"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudfront"
 	"github.com/aws/aws-sdk-go-v2/service/cloudfront/types"
@@ -17,13 +19,15 @@ type Distribution struct {
 }
 
 var (
-	callerReference string = "awscloudfront-invalidator"
-	quanitity       int32  = 1
+	callRefBase string = "awscloudfront-invalidator"
+	quanitity   int32  = 1
 )
 
 func (dist Distribution) Invalidate(PathString string, client *cloudfront.Client) (string, error) {
+	unqiueCallerRef := callRefBase + "-" + strconv.Itoa(int(time.Now().Unix()))
+
 	invalidationBatch := &types.InvalidationBatch{
-		CallerReference: &callerReference,
+		CallerReference: &unqiueCallerRef,
 		Paths: &types.Paths{
 			Quantity: &quanitity,
 			Items:    []string{PathString},
