@@ -1,10 +1,11 @@
-#Requirments
+# AWS CloudFront Distribution Invalidation Tool
 
-| # | Requirements |
-| - | - |
-| 1 | Detect Distribution by its ID |
-| 2 | Detect Distribution by its first domain alias |
-| 3 | Detect Distribution by its S3 Origin |
-| 4 | Invalidate cache |
-| 5 | Optional wait for invalidation to complete |
+
+# Features / TODO
+
+- [ ] Detect Distribution by its ID
+- [ ] Detect Distribution by its first domain alias
+- [ ] Detect Distribution by its S3 Origin
+- [ ] Invalidate cache
+- [ ] Optional wait for invalidation to complete
 
