@@ -38,6 +38,6 @@ func main() {
 			os.Exit(1)
 		}
 
-		fmt.Printf("InvalidationId: %10s\n", invalidationId)
+		fmt.Printf("%s", invalidationId)
 	}
 }
