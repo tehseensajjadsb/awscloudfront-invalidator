@@ -1,12 +1,12 @@
-# AWS CloudFront Distribution Invalidation Tool
-
+# CloudFront Distribution Invalidation Tool
 
 # Features / TODO
 
-- [X] Add `aws sts get-caller-identity` feature
-- [ ] Detect Distribution by its ID
-- [ ] Detect Distribution by its first domain alias
-- [ ] Detect Distribution by its S3 Origin
-- [ ] Invalidate cache
-- [ ] Optional wait for invalidation to complete
-
+- Main Tool Features:
+    - [X] Add `aws sts get-caller-identity` feature
+    - [X] Add Cache Invalidation Feature
+    - [X] Detect Distribution by its ID
+- QOL Features
+    - [ ] Detect Distribution by its first domain alias
+    - [ ] Detect Distribution by its S3 Origin
+    - [ ] Optional wait for invalidation to complete
