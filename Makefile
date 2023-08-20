@@ -1,5 +1,6 @@
+
 build:
-	go build -o bin/awscfn ./src/
+	CGO_ENABLED=0 go build -o bin/awscfn ./src/
 
 run:
 	go run ./src/
