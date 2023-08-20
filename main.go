@@ -3,5 +3,6 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("Tool Init")
+	awsAuthConfig := GetAwsAuthConfig("us-east-1")
+	fmt.Printf("%v", GetCallerIdentity(awsAuthConfig))
 }
