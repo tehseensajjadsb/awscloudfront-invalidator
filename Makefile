@@ -1,8 +1,8 @@
 build:
-	go build -o bin/awscfn main.go
+	go build -o bin/awscfn .
 
 run:
-	go run main.go
+	go run .
 
 clean:
 	go mod tidy
