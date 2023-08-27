@@ -22,8 +22,14 @@ func Invalidate(invalidationPaths []string, distribution Invalidatable, client *
 			Items:    invalidationPaths,
 		},
 	}
+
+	distributionId, err := distribution.GetDistributionId()
+	if err != nil {
+		return "", err
+	}
+
 	invalidationInput := cloudfront.CreateInvalidationInput{
-		DistributionId:    distribution.GetDistributionId(),
+		DistributionId:    distributionId,
 		InvalidationBatch: invalidationBatch,
 	}
 
