@@ -2,48 +2,80 @@ package main
 
 import (
 	"context"
-	"strconv"
-	"time"
+	"errors"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudfront"
-	"github.com/aws/aws-sdk-go-v2/service/cloudfront/types"
 )
 
 const CallerReferencePrefix = "awscloudfront-invalidator"
 
-type DistributionInvalidator interface {
-	Invalidate(string) string
-	WaitForInvalidation()
+type Invalidatable interface {
+	GetDistributionId() (*string, error)
 }
 
-type Distribution struct {
+type DistributionById struct {
 	Id string
 }
 
-func (dist *Distribution) Invalidate(invalidationPaths []string, client *cloudfront.Client) (string, error) {
-	currentTime := int(time.Now().Unix())
-	unqiueCallerRef := CallerReferencePrefix + "-" + strconv.Itoa(currentTime)
 
-	pathsCount := int32(len(invalidationPaths))
+func (dist DistributionById) GetDistributionId() (*string, error) {
+	return &dist.Id, nil
+}
 
-	invalidationBatch := &types.InvalidationBatch{
-		CallerReference: &unqiueCallerRef,
-		Paths: &types.Paths{
-			Quantity: &pathsCount,
-			Items:    invalidationPaths,
-		},
+type DistributionByAlias struct {
+	Alias string
+}
+
+func (dist DistributionByAlias) GetDistributionId() (*string, error) {
+	failedResponse := ""
+
+	listMarker := "xyz"
+	var maxItems int32 = 100
+	params := cloudfront.ListDistributionsInput{
+		Marker:   &listMarker,
+		MaxItems: &maxItems,
 	}
-	invalidationInput := cloudfront.CreateInvalidationInput{
-		DistributionId:    &dist.Id,
-		InvalidationBatch: invalidationBatch,
-	}
-
-	invalidationResult, err := client.CreateInvalidation(context.TODO(), &invalidationInput)
+	distributions, err := CloudfrontClient.ListDistributions(context.TODO(), &params)
 	if err != nil {
-		return "", err
+		return &failedResponse, nil
 	}
 
-	invalidation := invalidationResult.Invalidation
-	invalidationId := *invalidation.Id
-	return invalidationId, nil
+	for _, distSummary := range distributions.DistributionList.Items {
+		for _, alias := range distSummary.Aliases.Items {
+			if alias == dist.Alias {
+				return distSummary.Id, nil
+			}
+		}
+	}
+
+	return &failedResponse, errors.New(fmt.Sprintf("Could not find Cloudfront distribution with Alias: %s", dist.Alias))
+}
+
+type DistributionByOriginPath struct {
+	OriginPath string
+}
+
+func (dist DistributionByOriginPath) GetDistributionId() (*string, error) {
+	failedResponse := ""
+	listMarker := "xyz"
+	var maxItems int32 = 100
+	params := cloudfront.ListDistributionsInput{
+		Marker:   &listMarker,
+		MaxItems: &maxItems,
+	}
+	distributions, err := CloudfrontClient.ListDistributions(context.TODO(), &params)
+	if err != nil {
+		return &failedResponse, nil
+	}
+
+	for _, distSummary := range distributions.DistributionList.Items {
+		for _, origin := range distSummary.Origins.Items {
+			if dist.OriginPath == *origin.OriginPath {
+				return distSummary.Id, nil
+			}
+		}
+	}
+
+	return &failedResponse, errors.New(fmt.Sprintf("Could not find Cloudfront distribution with Origin Path: %s", dist.OriginPath))
 }
