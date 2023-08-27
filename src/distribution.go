@@ -11,22 +11,24 @@ import (
 const CallerReferencePrefix = "awscloudfront-invalidator"
 
 type Invalidatable interface {
-	GetDistributionId() (string, error)
+	GetDistributionId() (*string, error)
 }
 
 type DistributionById struct {
 	Id string
 }
 
-func (dist DistributionById) GetDistributionId() (string, error) {
-	return dist.Id, nil
+func (dist DistributionById) GetDistributionId() (*string, error) {
+	return &dist.Id, nil
 }
 
 type DistributionByFirstAlias struct {
 	Alias string
 }
 
-func (dist DistributionByFirstAlias) GetDistributionId() (string, error) {
+func (dist DistributionByFirstAlias) GetDistributionId() (*string, error) {
+	failedResponse := ""
+
 	listMarker := "xyz"
 	var maxItems int32 = 100
 	params := cloudfront.ListDistributionsInput{
@@ -35,16 +37,16 @@ func (dist DistributionByFirstAlias) GetDistributionId() (string, error) {
 	}
 	distributions, err := CloudfrontClient.ListDistributions(context.TODO(), &params)
 	if err != nil {
-		return "", nil
+		return &failedResponse, nil
 	}
 
 	for _, distSummary := range distributions.DistributionList.Items {
 		for _, alias := range distSummary.Aliases.Items {
 			if alias == dist.Alias {
-				return *distSummary.Id, nil
+				return distSummary.Id, nil
 			}
 		}
 	}
 
-	return "", errors.New(fmt.Sprintf("Could not find Cloudfront distribution with Alias: %s", dist.Alias))
+	return &failedResponse, errors.New(fmt.Sprintf("Could not find Cloudfront distribution with Alias: %s", dist.Alias))
 }
