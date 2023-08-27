@@ -62,12 +62,18 @@ func main() {
 		log.Fatal("You must provide a path to invalidate")
 	}
 
-	invalidationPaths := strings.Split(Paths, ",")
+	invalidationPaths := []string{Paths}
+	if strings.Contains(Paths, ",") {
+		invalidationPaths = strings.Split(strings.TrimSpace(Paths), ",")
+		if len(invalidationPaths) == 0 {
+			log.Fatalf("Incorrect invalidation Paths provided: %s", Paths)
+		}
+	}
 
 	invalidationId, err := Invalidate(invalidationPaths, Distribution)
 	if err != nil {
 		log.Fatalf("Failed to invalidate distribution %v\n", err)
 	}
 
-	fmt.Printf("%s", invalidationId)
+	fmt.Printf("%s\n", invalidationId)
 }
