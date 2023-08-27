@@ -9,6 +9,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudfront/types"
 )
 
+const CallerReferencePrefix = "awscloudfront-invalidator"
+
 type DistributionInvalidator interface {
 	Invalidate(string) string
 	WaitForInvalidation()
@@ -18,19 +20,17 @@ type Distribution struct {
 	Id string
 }
 
-var (
-	callRefBase string = "awscloudfront-invalidator"
-	quanitity   int32  = 1
-)
+func (dist *Distribution) Invalidate(invalidationPaths []string, client *cloudfront.Client) (string, error) {
+	currentTime := int(time.Now().Unix())
+	unqiueCallerRef := CallerReferencePrefix + "-" + strconv.Itoa(currentTime)
 
-func (dist Distribution) Invalidate(PathString string, client *cloudfront.Client) (string, error) {
-	unqiueCallerRef := callRefBase + "-" + strconv.Itoa(int(time.Now().Unix()))
+	pathsCount := int32(len(invalidationPaths))
 
 	invalidationBatch := &types.InvalidationBatch{
 		CallerReference: &unqiueCallerRef,
 		Paths: &types.Paths{
-			Quantity: &quanitity,
-			Items:    []string{PathString},
+			Quantity: &pathsCount,
+			Items:    invalidationPaths,
 		},
 	}
 	invalidationInput := cloudfront.CreateInvalidationInput{
