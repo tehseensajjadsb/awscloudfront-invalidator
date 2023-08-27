@@ -22,11 +22,11 @@ func (dist DistributionById) GetDistributionId() (*string, error) {
 	return &dist.Id, nil
 }
 
-type DistributionByFirstAlias struct {
+type DistributionByAlias struct {
 	Alias string
 }
 
-func (dist DistributionByFirstAlias) GetDistributionId() (*string, error) {
+func (dist DistributionByAlias) GetDistributionId() (*string, error) {
 	failedResponse := ""
 
 	listMarker := "xyz"
