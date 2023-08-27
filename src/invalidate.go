@@ -9,7 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudfront/types"
 )
 
-func Invalidate(invalidationPaths []string, distribution Invalidatable, client *cloudfront.Client) (string, error) {
+func Invalidate(invalidationPaths []string, distribution Invalidatable) (string, error) {
 	currentTime := int(time.Now().Unix())
 	unqiueCallerRef := CallerReferencePrefix + "-" + strconv.Itoa(currentTime)
 
@@ -33,7 +33,7 @@ func Invalidate(invalidationPaths []string, distribution Invalidatable, client *
 		InvalidationBatch: invalidationBatch,
 	}
 
-	invalidationResult, err := client.CreateInvalidation(context.TODO(), &invalidationInput)
+	invalidationResult, err := CloudfrontClient.CreateInvalidation(context.TODO(), &invalidationInput)
 	if err != nil {
 		return "", err
 	}
