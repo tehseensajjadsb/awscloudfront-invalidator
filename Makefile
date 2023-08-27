@@ -1,9 +1,15 @@
+PLATFORMS := linux windows darwin
+ARCH = amd64
 
-build:
-	CGO_ENABLED=0 go build -o bin/awscfn ./src/
+$(PLATFORMS):
+	GOOS=$@ GOARCH=$(ARCH) CGO_ENABLED=0 go build -v -o ./bin/invalidator_$(ARCH)_$@ ./...
+
+release: $(PLATFORMS)
+
+.PHONY: clean release $(PLATFORMS)
 
 run:
-	go run ./src/
+	go run ./...
 
 clean:
 	go mod tidy
