@@ -50,3 +50,31 @@ func (dist DistributionByFirstAlias) GetDistributionId() (*string, error) {
 
 	return &failedResponse, errors.New(fmt.Sprintf("Could not find Cloudfront distribution with Alias: %s", dist.Alias))
 }
+
+type DistributionByOriginPath struct {
+	OriginPath string
+}
+
+func (dist DistributionByOriginPath) GetDistributionId() (*string, error) {
+	failedResponse := ""
+	listMarker := "xyz"
+	var maxItems int32 = 100
+	params := cloudfront.ListDistributionsInput{
+		Marker:   &listMarker,
+		MaxItems: &maxItems,
+	}
+	distributions, err := CloudfrontClient.ListDistributions(context.TODO(), &params)
+	if err != nil {
+		return &failedResponse, nil
+	}
+
+	for _, distSummary := range distributions.DistributionList.Items {
+		for _, origin := range distSummary.Origins.Items {
+			if dist.OriginPath == *origin.OriginPath {
+				return distSummary.Id, nil
+			}
+		}
+	}
+
+	return &failedResponse, errors.New(fmt.Sprintf("Could not find Cloudfront distribution with Origin Path: %s", dist.OriginPath))
+}
