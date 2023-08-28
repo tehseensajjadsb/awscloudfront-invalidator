@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
+	"os"
 	"strings"
 )
 
@@ -21,9 +21,9 @@ var Distribution Invalidatable
 func Init() {
 	flag.StringVar(&Region, "region", "us-east-1", "AWS Region")
 	flag.BoolVar(&GetCurrentProfileDetails, "whoami", false, "Get current profile details and exit, similar to output of 'aws sts get-caller-identity'")
-	flag.StringVar(&InputId, "distribution-id", "", "Cloudfront distribution id")
-	flag.StringVar(&InputAlias, "distribution-alias", "", "Cloudfront distribution configured alias domain")
-	flag.StringVar(&InputOriginPath, "distribution-originpath", "", "Cloudfront distribution configured origin path")
+	flag.StringVar(&InputId, "id", "", "Cloudfront distribution id")
+	flag.StringVar(&InputAlias, "alias", "", "Cloudfront distribution configured alias domain")
+	flag.StringVar(&InputOriginPath, "origin-path", "", "Cloudfront distribution configured origin path")
 	flag.StringVar(&Paths, "paths", "", "Path(s) to invalidate")
 	flag.Parse()
 }
@@ -59,20 +59,23 @@ func main() {
 	}
 
 	if Paths == "" {
-		log.Fatal("You must provide a path to invalidate")
+		fmt.Fprint(os.Stderr, "You must provide a path to invalidate")
+		os.Exit(1)
 	}
 
 	invalidationPaths := []string{Paths}
 	if strings.Contains(Paths, ",") {
 		invalidationPaths = strings.Split(strings.TrimSpace(Paths), ",")
 		if len(invalidationPaths) == 0 {
-			log.Fatalf("Incorrect invalidation Paths provided: %s", Paths)
+			fmt.Fprintf(os.Stderr, "Incorrect invalidation Paths provided: %s", Paths)
+			os.Exit(1)
 		}
 	}
 
 	invalidationId, err := Invalidate(invalidationPaths, Distribution)
 	if err != nil {
-		log.Fatalf("Failed to invalidate distribution %v\n", err)
+		fmt.Fprintf(os.Stderr, "Failed to invalidate distribution %v\n", err)
+		os.Exit(1)
 	}
 
 	fmt.Printf("%s\n", invalidationId)
