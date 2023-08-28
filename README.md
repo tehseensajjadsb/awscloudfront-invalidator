@@ -23,6 +23,8 @@ GOARCH=amd64
 CGO_ENABLED=0 go build -v ./... -o ./bin/invalidator
 ```
 
+Move it to your PATH
+
 ```
 chmod +x ./bin/invalidator
 mv ./bin/invalidator /usr/local/bin/invalidator
