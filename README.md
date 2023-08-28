@@ -4,7 +4,7 @@
 
 ### Download Latest Release
 
-Download the latest release and move it to your PATH
+Download the latest [release](https://github.com/tehseensajjadsb/awscloudfront-invalidator/releases) and move it to your PATH
 
 ### Build from source
 
@@ -42,6 +42,6 @@ $ invalidator --help
     - [X] Add Cache Invalidation Feature
     - [X] Detect Distribution by its ID
 - QOL Features
-    - [ ] Detect Distribution by its first domain alias
+    - [ ] Detect Distribution by its first domain alias [DONE BUT UNTESTED]
     - [X] Detect Distribution by its S3 Origin
     - [ ] Optional wait for invalidation to complete
