@@ -74,7 +74,7 @@ func main() {
 
 	invalidationId, err := Invalidate(invalidationPaths, Distribution)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to invalidate distribution %v\n", err)
+		fmt.Fprintf(os.Stderr, "%v", err)
 		os.Exit(1)
 	}
 
