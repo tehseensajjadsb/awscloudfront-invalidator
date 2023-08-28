@@ -17,9 +17,6 @@ jobs:
       with:
         go-version: '1.21'
     
-    - name: Build
-      run: |
-        make release
     
     - name: Create a Release
       uses: elgohr/Github-Release-Action@v4
@@ -28,7 +25,12 @@ jobs:
       with:
         title: ${{ github.ref_name }}
 
-    - uses: AButler/upload-release-assets@v2.0
+    - name: Build
+      run: |
+        make release
+
+    - name: Upload Binaries
+      uses: AButler/upload-release-assets@v2.0
       with:
         files: 'bin/invalidator*'
         repo-token: ${{ secrets.GITHUB_TOKEN }}
