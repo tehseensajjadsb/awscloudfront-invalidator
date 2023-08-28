@@ -65,7 +65,7 @@ func (dist DistributionByOriginPath) GetDistributionId() (*string, error) {
 	}
 	distributions, err := CloudfrontClient.ListDistributions(context.TODO(), &params)
 	if err != nil {
-		return &failedResponse, nil
+		return &failedResponse, err
 	}
 
 	for _, distSummary := range distributions.DistributionList.Items {
