@@ -1,0 +1,35 @@
+on:
+  push:
+    tags:
+    - 'v*.*.*'
+
+jobs:
+  upload-release:
+    name: "release-binaries"
+
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+      name: Checkout SCM
+
+    - uses: actions/setup-go@v4
+      name: Setup Go
+      with:
+        go-version: '1.21'
+    
+    - name: Build
+      run: |
+        make release
+    
+    - name: Create a Release
+      uses: elgohr/Github-Release-Action@v4
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        title: ${{ github.ref_name }}
+
+    - uses: AButler/upload-release-assets@v2.0
+      with:
+        files: 'bin/invalidator*'
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        release-tag: ${{ github.ref_name }}
