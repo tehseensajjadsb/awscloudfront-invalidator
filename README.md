@@ -18,9 +18,7 @@ cd awscloudfront-invaliator
 Choose `GOOS` & `GOARCH`. Build the binary
 
 ```
-GOOS=linux
-GOARCH=amd64 
-CGO_ENABLED=0 go build -v ./... -o ./bin/invalidator
+GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v ./... -o ./bin/invalidator
 ```
 
 Move it to your PATH
