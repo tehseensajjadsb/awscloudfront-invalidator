@@ -29,10 +29,8 @@ type DistributionByAlias struct {
 func (dist DistributionByAlias) GetDistributionId() (*string, error) {
 	failedResponse := ""
 
-	listMarker := "xyz"
 	var maxItems int32 = 100
 	params := cloudfront.ListDistributionsInput{
-		Marker:   &listMarker,
 		MaxItems: &maxItems,
 	}
 	distributions, err := CloudfrontClient.ListDistributions(context.TODO(), &params)
@@ -57,15 +55,13 @@ type DistributionByOriginPath struct {
 
 func (dist DistributionByOriginPath) GetDistributionId() (*string, error) {
 	failedResponse := ""
-	listMarker := "xyz"
 	var maxItems int32 = 100
 	params := cloudfront.ListDistributionsInput{
-		Marker:   &listMarker,
 		MaxItems: &maxItems,
 	}
 	distributions, err := CloudfrontClient.ListDistributions(context.TODO(), &params)
 	if err != nil {
-		return &failedResponse, nil
+		return &failedResponse, err
 	}
 
 	for _, distSummary := range distributions.DistributionList.Items {

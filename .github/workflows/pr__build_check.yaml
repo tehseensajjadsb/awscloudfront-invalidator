@@ -4,9 +4,16 @@ on:
   pull_request:
     branches:
     - "master"
+    paths-ignore:
+    - "README.md"
+    - "LICENSE"
+    - ".gitignore"
+    - ".github"
 
 jobs:
   build:
+    name: "buildCheck"
+
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3

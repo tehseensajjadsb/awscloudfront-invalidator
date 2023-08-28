@@ -22,3 +22,6 @@ go.work
 
 # Compiled binaries
 bin/
+
+# IDE Config
+.vscode/
