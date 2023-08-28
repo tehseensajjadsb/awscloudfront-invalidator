@@ -23,6 +23,6 @@ mv ./bin/$BINARY ~/.local/bin/invalidator
     - [X] Add Cache Invalidation Feature
     - [X] Detect Distribution by its ID
 - QOL Features
-    - [X] Detect Distribution by its first domain alias
+    - [ ] Detect Distribution by its first domain alias
     - [X] Detect Distribution by its S3 Origin
     - [ ] Optional wait for invalidation to complete
