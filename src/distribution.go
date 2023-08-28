@@ -18,7 +18,6 @@ type DistributionById struct {
 	Id string
 }
 
-
 func (dist DistributionById) GetDistributionId() (*string, error) {
 	return &dist.Id, nil
 }
